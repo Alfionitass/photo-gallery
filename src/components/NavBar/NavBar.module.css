@@ -1,0 +1,46 @@
+.root {
+    display: flex;
+    flex-grow: 1;
+}
+
+.title {
+    display: flex;
+    flex-grow: 1;
+    display: none;
+}
+
+.searchBox {
+    position: relative;
+    box-sizing: border-box;
+    border-radius: 0.5rem;
+    width: 10rem;
+    margin-left: 1rem;
+    background-color: white;
+}
+
+.searchIcon {
+    padding: 0.5rem 0.5rem;
+    height: 100%;
+    margin-right: 0.5rem;
+    position: absolute;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    z-index: 10;
+}
+
+/* .searchIcon {
+    margin-left: 1rem;
+} */
+
+/* .input {
+    padding: 1 1 1 0;
+    // vertical padding + font size from searchIcon
+    paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
+    transition: theme.transitions.create('width'),
+    width: '100%',
+    [theme.breakpoints.up('sm')]: {
+      width: '12ch',
+      '&:focus': {
+        width: '20ch',
+} */

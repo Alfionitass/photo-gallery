@@ -1,0 +1,19 @@
+.card {
+    max-width: 35rem;
+}
+
+.cardMedia {
+    height: 14rem;
+}
+
+.container {
+    padding: 2.6rem 3.6rem;
+    display: flex;
+}
+
+.grid {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+}
