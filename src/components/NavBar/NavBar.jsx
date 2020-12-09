@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from "axios";
 import { AppBar, Toolbar, Typography, InputBase, IconButton } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import { fade, makeStyles } from '@material-ui/core/styles';
@@ -60,8 +61,21 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function NavBar() {
+export default function NavBar({ onSearch }) {
   const classes = useStyles();
+  const [inputUser, setInputUser] = useState();
+  const [isSearch, setIsSearch] = useState(false);
+
+  const handleChange = (e) => {
+    setInputUser(e.target.value)
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (e.key === "Enter") {
+      onSearch();
+    }
+  }
 
   return (
     <div className={classes.root}>
@@ -74,14 +88,21 @@ export default function NavBar() {
             <div className={classes.searchIcon}>
               <SearchIcon />
             </div>
+            <form onSubmit={{handleSubmit}}>
             <InputBase
-              placeholder="Search…"
-              classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput,
-              }}
-              inputProps={{ 'aria-label': 'search' }}
-            />
+                placeholder="Search…"
+                classes={{
+                  root: classes.inputRoot,
+                  input: classes.inputInput,
+                }}
+                inputProps={{ 'aria-label': 'search' }}
+                value= {inputUser}
+                onChange={handleChange}
+              />
+            </form>
+              
+            
+            
           </div>
         </Toolbar>
       </AppBar>
