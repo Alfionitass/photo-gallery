@@ -18,7 +18,8 @@ import SearchIcon from '@material-ui/icons/Search';
 import { fade, makeStyles } from '@material-ui/core/styles';
 import NavBar from "./components/NavBar/NavBar";
 import PhotoList from "./components/PhotoList/PhotoList";
-import styles from "./components/PhotoList/PhotoList.module.css"
+import styles from "./components/PhotoList/PhotoList.module.css";
+import pagePagination from "./components/pagePagination"
 import './App.css';
 
 const useStyles = makeStyles((theme) => ({
@@ -78,8 +79,9 @@ function App() {
   const [photos, setPhotos] = useState();
   const classes = useStyles();
   const [inputUser, setInputUser] = useState('');
-  //const [totalResults, setTotalResults] = useState(0);
-  //const [currentPage, setCurrentPage] = useState(1);
+  const [perPage, setPerPage] = useState(12);
+  const [totalResults, setTotalResults] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
   
   useEffect(() => {
     axios({
@@ -110,6 +112,7 @@ function App() {
           //console.log("data search", res)
           setPhotos(res?.data?.photos);
           setInputUser('');
+          setTotalResults(res?.data?.photos?.total);
         }
       })
       .catch((err) => {
@@ -126,26 +129,51 @@ function App() {
     if (inputUser) {
       search();
     }
+    
   }
 
-  // const nextPage = (pageNumber) => {
-  //   axios({
-  //     method: "GET",
-  //     url: `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=e8a7f5fd9748f2567214440d10611b4a&tags=${inputUser}&format=json&nojsoncallback=true&page=${pageNumber}`,
-  //   })
-  //     .then((res) => {
-  //       if (res.status === 200) {
-  //         //console.log("data search", res)
-  //         setPhotos(res?.data?.photos);
-  //         setCurrentPage(pageNumber)
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       console.log("errornya", err);
-  //   });
+  // const indexOfLast = currentPage * perPage;
+  // const indexOfFirst = indexOfLast - perPage;
+  //const current = photos.slice(indexOfFirst, indexOfLast);
+  // const pageNumbers = [];
+  // for (let i = 1; i <= Math.ceil(photos?.photo.length / perPage); i++) {
+  //   pageNumbers.push(i);
   // }
+
+  // const renderPageNumbers = pageNumbers.map((number) => {
+  //   return (
+  //     <span 
+  //       key={number}
+  //       id= {number}
+  //       onClick = {(e) => setCurrentPage(Number(e.target.id))}
+  //       className = {styles.paginate}
+  //     >
+  //       {number}&nbsp;
+  //     </span>
+  //   )
+  // })
+
+  const nextPage = (pageNumber) => {
+    axios({
+      method: "GET",
+      url: `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=e8a7f5fd9748f2567214440d10611b4a&tags=${inputUser}&format=json&nojsoncallback=true&page=${pageNumber}`,
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          //console.log("data search", res)
+          setPhotos(res?.data?.photos);
+          setCurrentPage(pageNumber)
+        }
+      })
+      .catch((err) => {
+        console.log("errornya", err);
+    });
+  }
+
+  const numberPages = Math.floor(totalResults / 50);
    
   return (
+    
     <React.Fragment>
       <div className={classes.root}>
         <AppBar position="static">
@@ -174,8 +202,8 @@ function App() {
         </AppBar>
       </div>
       <PhotoList photos={photos} />
+      {totalResults > 20 ? <Pagination pages={numberPages} nextPage={nextPage} currentPage={currentPage} /> : '' }
     </React.Fragment>
-    
   );
 }
 

@@ -17,3 +17,24 @@
     justify-content: center;
     width: 100%;
 }
+
+.paginate {
+    cursor: pointer;
+    font-weight: normal;
+    color: #000;
+}
+
+.paginate:active {
+    font-weight: bold;
+    color: #20cb9d;
+}
+
+.pagePaginate {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2rem;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+}

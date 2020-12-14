@@ -7,7 +7,9 @@ import styles from "./PhotoList.module.css";
 
 export default function PhotoList(props) {
     const { children } = props;
-    console.log("poto", props.photos)
+    //const current = props.photos?.photo.slice(indexOfFirst, indexOfLast);
+    const current = props.photos?.photo;
+    console.log("poto", current)
 
     const photo = props.photos?.photo.map((photo, i) => (
         <Grid item md={4} sm={6} xs={12} key={i} >
