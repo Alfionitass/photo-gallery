@@ -19,7 +19,7 @@ import { fade, makeStyles } from '@material-ui/core/styles';
 import NavBar from "./components/NavBar/NavBar";
 import PhotoList from "./components/PhotoList/PhotoList";
 import styles from "./components/PhotoList/PhotoList.module.css";
-import pagePagination from "./components/pagePagination"
+import PagePagination from "./components/PagePagination"
 import './App.css';
 
 const useStyles = makeStyles((theme) => ({
@@ -93,6 +93,7 @@ function App() {
         if (res.status === 200) {
           //console.log("data", res)
           setPhotos(res?.data?.photos);
+          setTotalResults(res?.data?.photos?.total);
         }
       })
       .catch((err) => {
@@ -112,7 +113,7 @@ function App() {
           //console.log("data search", res)
           setPhotos(res?.data?.photos);
           setInputUser('');
-          setTotalResults(res?.data?.photos?.total);
+          
         }
       })
       .catch((err) => {
@@ -156,7 +157,7 @@ function App() {
   const nextPage = (pageNumber) => {
     axios({
       method: "GET",
-      url: `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=e8a7f5fd9748f2567214440d10611b4a&tags=${inputUser}&format=json&nojsoncallback=true&page=${pageNumber}`,
+      url: `https://www.flickr.com/services/rest/?method=flickr.photos.getRecent&api_key=e8a7f5fd9748f2567214440d10611b4a&format=json&nojsoncallback=true&page=${pageNumber}`,
     })
       .then((res) => {
         if (res.status === 200) {
@@ -202,7 +203,7 @@ function App() {
         </AppBar>
       </div>
       <PhotoList photos={photos} />
-      {totalResults > 20 ? <Pagination pages={numberPages} nextPage={nextPage} currentPage={currentPage} /> : '' }
+      {totalResults > 20 ? <PagePagination pages={numberPages} nextPage={nextPage} currentPage={currentPage} /> : '' }
     </React.Fragment>
   );
 }

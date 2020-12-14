@@ -12,26 +12,26 @@ const useStyles = makeStyles((theme) => ({
     },
   }));
 
-const pagePagination = (props) => {
+export default function PagePagination (props) {
     const classes = useStyles();
     const pageLinks = [];
+    let page= [];
     const {pages, nextPage, currentPage, children } = props;
 
     for (let i=1; i <= pages + 1; i++) {
         let active = props.currentPage === i ? 'secondary' : '';
 
     pageLinks.push(<div className={`${active} `} key= {i} onClick={() => nextPage(i)}><a href="#">{i}</a></div>)
+    page = [i];
     }
 
     return (
         <div className={classes.root}>
-            <Pagination count={pageLinks} >
+            <Pagination count={page} color="secondary" >
                 {children}
-                
+                {pageLinks}
             </Pagination>
         </div>
         
     )
 }
-
-export default pagePagination;

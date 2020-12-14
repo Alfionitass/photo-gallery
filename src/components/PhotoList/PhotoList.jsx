@@ -12,7 +12,7 @@ export default function PhotoList(props) {
     console.log("poto", current)
 
     const photo = props.photos?.photo.map((photo, i) => (
-        <Grid item md={4} sm={6} xs={12} key={i} >
+        <Grid item md={3} sm={6} xs={12} key={i} >
             <Card className={styles.card}>
                 <CardActionArea>
                     <CardMedia
