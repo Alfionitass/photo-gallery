@@ -19,12 +19,14 @@ import { fade, makeStyles } from '@material-ui/core/styles';
 import NavBar from "./components/NavBar/NavBar";
 import PhotoList from "./components/PhotoList/PhotoList";
 import styles from "./components/PhotoList/PhotoList.module.css";
-import PagePagination from "./components/PagePagination"
+import PagePagination from "./components/PagePagination";
+import Paginate from "./components/Paginate";
 import './App.css';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
+    display: 'flex'
   },
   title: {
     flexGrow: 1,
@@ -82,17 +84,19 @@ function App() {
   const [perPage, setPerPage] = useState(12);
   const [totalResults, setTotalResults] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
   
   useEffect(() => {
     axios({
       method: "GET",
-      url: "https://www.flickr.com/services/rest/?method=flickr.photos.getRecent&api_key=e8a7f5fd9748f2567214440d10611b4a&format=json&nojsoncallback=true",
+      url: `https://www.flickr.com/services/rest/?method=flickr.photos.getRecent&api_key=e8a7f5fd9748f2567214440d10611b4a&format=json&nojsoncallback=true`,
      
     })
       .then((res) => {
         if (res.status === 200) {
           //console.log("data", res)
           setPhotos(res?.data?.photos);
+          setTotalPages(res?.data?.photos?.pages);
           setTotalResults(res?.data?.photos?.total);
         }
       })
@@ -163,6 +167,8 @@ function App() {
         if (res.status === 200) {
           //console.log("data search", res)
           setPhotos(res?.data?.photos);
+          //setTotalPages(res?.data?.photos?.pages);
+          //setTotalResults(res?.data?.photos?.total);
           setCurrentPage(pageNumber)
         }
       })
@@ -171,7 +177,7 @@ function App() {
     });
   }
 
-  const numberPages = Math.floor(totalResults / 50);
+  const numberPages = Math.floor(totalResults / 100);
    
   return (
     
@@ -203,7 +209,8 @@ function App() {
         </AppBar>
       </div>
       <PhotoList photos={photos} />
-      {totalResults > 20 ? <PagePagination pages={numberPages} nextPage={nextPage} currentPage={currentPage} /> : '' }
+      {totalResults > 10 ? <PagePagination pages={numberPages} nextPage={nextPage} currentPage={currentPage} /> : '' }
+      {/* { photos ? <Paginate totalPages={totalPages} /> : '' } */}
     </React.Fragment>
   );
 }

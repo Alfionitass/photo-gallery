@@ -9,6 +9,8 @@ const useStyles = makeStyles((theme) => ({
       '& > *': {
         marginTop: theme.spacing(2),
       },
+      display: 'flex',
+      justifyContent: 'center'
     },
   }));
 
@@ -19,7 +21,7 @@ export default function PagePagination (props) {
     const {pages, nextPage, currentPage, children } = props;
 
     for (let i=1; i <= pages + 1; i++) {
-        let active = props.currentPage === i ? 'secondary' : '';
+        let active = currentPage === i ? 'secondary' : '';
 
     pageLinks.push(<div className={`${active} `} key= {i} onClick={() => nextPage(i)}><a href="#">{i}</a></div>)
     page = [i];
