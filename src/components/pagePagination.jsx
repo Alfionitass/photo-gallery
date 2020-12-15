@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {Grid} from "@material-ui/core";
 import { makeStyles } from '@material-ui/core/styles';
 import Pagination from '@material-ui/lab/Pagination';
@@ -6,7 +6,7 @@ import styles from "./PhotoList/PhotoList.module.css"
 
 const useStyles = makeStyles((theme) => ({
     root: {
-      '& > *': {
+      '& > * + *': {
         marginTop: theme.spacing(2),
       },
       display: 'flex',
@@ -16,6 +16,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function PagePagination (props) {
     const classes = useStyles();
+    //const [page, setPage] = useState(1);
     const pageLinks = [];
     let page= [];
     const {pages, nextPage, currentPage, children } = props;
