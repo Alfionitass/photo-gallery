@@ -24,7 +24,7 @@ export default function PagePagination (props) {
         let active = currentPage === i ? 'secondary' : '';
 
     pageLinks.push(<div className={`${active} `} key= {i} onClick={() => nextPage(i)}><a href="#">{i}</a></div>)
-    page = [i];
+    page = i;
     }
 
     return (

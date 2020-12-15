@@ -16,17 +16,21 @@ import { Container,
 } from "@material-ui/core";
 import SearchIcon from '@material-ui/icons/Search';
 import { fade, makeStyles } from '@material-ui/core/styles';
-import NavBar from "./components/NavBar/NavBar";
+import Pagination from '@material-ui/lab/Pagination';
 import PhotoList from "./components/PhotoList/PhotoList";
-import styles from "./components/PhotoList/PhotoList.module.css";
-import PagePagination from "./components/PagePagination";
-import Paginate from "./components/Paginate";
 import './App.css';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
     display: 'flex'
+  },
+  root2: {
+    '& > * + *': {
+      marginTop: theme.spacing(2),
+    },
+    display: 'flex',
+    justifyContent: 'center'
   },
   title: {
     flexGrow: 1,
@@ -81,7 +85,6 @@ function App() {
   const [photos, setPhotos] = useState();
   const classes = useStyles();
   const [inputUser, setInputUser] = useState('');
-  const [perPage, setPerPage] = useState(12);
   const [totalResults, setTotalResults] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
@@ -97,7 +100,7 @@ function App() {
           //console.log("data", res)
           setPhotos(res?.data?.photos);
           setTotalPages(res?.data?.photos?.pages);
-          setTotalResults(res?.data?.photos?.total);
+         // setTotalResults(res?.data?.photos?.total);
         }
       })
       .catch((err) => {
@@ -117,7 +120,7 @@ function App() {
           //console.log("data search", res)
           setPhotos(res?.data?.photos);
           setInputUser('');
-          
+          setTotalPages(res?.data?.photos?.pages);
         }
       })
       .catch((err) => {
@@ -134,82 +137,82 @@ function App() {
     if (inputUser) {
       search();
     }
-    
   }
 
-  // const indexOfLast = currentPage * perPage;
-  // const indexOfFirst = indexOfLast - perPage;
-  //const current = photos.slice(indexOfFirst, indexOfLast);
-  // const pageNumbers = [];
-  // for (let i = 1; i <= Math.ceil(photos?.photo.length / perPage); i++) {
-  //   pageNumbers.push(i);
-  // }
-
-  // const renderPageNumbers = pageNumbers.map((number) => {
-  //   return (
-  //     <span 
-  //       key={number}
-  //       id= {number}
-  //       onClick = {(e) => setCurrentPage(Number(e.target.id))}
-  //       className = {styles.paginate}
-  //     >
-  //       {number}&nbsp;
-  //     </span>
-  //   )
-  // })
-
-  const nextPage = (pageNumber) => {
+  const pageSearch = (event, pageNumber) => {
     axios({
       method: "GET",
-      url: `https://www.flickr.com/services/rest/?method=flickr.photos.getRecent&api_key=e8a7f5fd9748f2567214440d10611b4a&format=json&nojsoncallback=true&page=${pageNumber}`,
+      url: `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=e8a7f5fd9748f2567214440d10611b4a&tags=${inputUser}&format=json&nojsoncallback=true&page=${pageNumber}`,
     })
       .then((res) => {
         if (res.status === 200) {
           //console.log("data search", res)
           setPhotos(res?.data?.photos);
-          //setTotalPages(res?.data?.photos?.pages);
-          //setTotalResults(res?.data?.photos?.total);
           setCurrentPage(pageNumber)
         }
       })
       .catch((err) => {
         console.log("errornya", err);
     });
+  };
+
+  const onChange = (event, pageNumber) => {
+    if (inputUser) {
+      pageSearch();
+    } else {
+      axios({
+        method: "GET",
+        url: `https://www.flickr.com/services/rest/?method=flickr.photos.getRecent&api_key=e8a7f5fd9748f2567214440d10611b4a&format=json&nojsoncallback=true&page=${pageNumber}`,
+      })
+        .then((res) => {
+          if (res.status === 200) {
+            //console.log("data search", res)
+            setPhotos(res?.data?.photos);
+            setCurrentPage(pageNumber)
+          }
+        })
+        .catch((err) => {
+          console.log("errornya", err);
+      });
+    }
   }
 
-  const numberPages = Math.floor(totalResults / 100);
+  //const numberPages = Math.floor(totalResults / 100);
    
   return (
     
     <React.Fragment>
       <div className={classes.root}>
         <AppBar position="static">
-          <Toolbar>
-            <Typography className={classes.title} variant="h6" noWrap>
-              Photo Gallery
-            </Typography>
-            <div className={classes.search}>
-              <div className={classes.searchIcon}>
-                <SearchIcon />
+            <Toolbar>
+                <Typography className={classes.title} variant="h6" noWrap>
+                  Photo Gallery
+                </Typography>
+              <div className={classes.search}>
+                <div className={classes.searchIcon}>
+                  <SearchIcon />
+                </div>
+                <form onSubmit= {handleSubmit}>
+                  <InputBase
+                      placeholder="Search…"
+                      classes={{
+                        root: classes.inputRoot,
+                        input: classes.inputInput,
+                      }}
+                      inputProps={{ 'aria-label': 'search' }}
+                      value= {inputUser}
+                      onChange={handleChange}
+                    />
+                </form>
               </div>
-              <form onSubmit= {handleSubmit}>
-                <InputBase
-                    placeholder="Search…"
-                    classes={{
-                      root: classes.inputRoot,
-                      input: classes.inputInput,
-                    }}
-                    inputProps={{ 'aria-label': 'search' }}
-                    value= {inputUser}
-                    onChange={handleChange}
-                  />
-              </form>
-            </div>
-          </Toolbar>
+            </Toolbar>
         </AppBar>
       </div>
       <PhotoList photos={photos} />
-      {totalResults > 10 ? <PagePagination pages={numberPages} nextPage={nextPage} currentPage={currentPage} /> : '' }
+      <div className={classes.root2}>
+        <Pagination count={totalPages} page={currentPage} onChange={onChange} color="secondary" />
+      </div>
+      {/* {totalResults > 10 ? <PagePagination pages={numberPages} nextPage={nextPage} currentPage={currentPage} /> : '' } */}
       {/* { photos ? <Paginate totalPages={totalPages} /> : '' } */}
     </React.Fragment>
   );
